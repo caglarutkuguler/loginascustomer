@@ -26,7 +26,7 @@ class MegVentureReviewNudge
 {
     /* Everything module-specific lives in these constants. */
     const CONFIG_PREFIX = 'LOGINASCUSTOMER_';
-    const REVIEW_URL = 'https://megventure.com/{lang}/testimonials/write?id_product=LAC_PRODUCT_ID';
+    const REVIEW_URL = 'https://megventure.com/{lang}/testimonials/write?id_product=95';
     const DELAY_DAYS = 21;
     const MAX_DISPLAYS = 3;
 

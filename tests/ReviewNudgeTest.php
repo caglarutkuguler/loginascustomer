@@ -165,10 +165,10 @@ Tools::$redirectedTo = null;
 Tools::$values = array('loginascustomer_review_go' => '1');
 MegVentureReviewNudge::handleRequest($fake);
 Tools::$values = array();
-ok(Tools::$redirectedTo === 'https://megventure.com/tr/testimonials/write?id_product=LAC_PRODUCT_ID',
+ok(Tools::$redirectedTo === 'https://megventure.com/tr/testimonials/write?id_product=95',
    'redirected to the review form in the BO language (' . Tools::$redirectedTo . ')');
 ok(!MegVentureReviewNudge::shouldDisplay(), 'never shown again after the click');
-ok(MegVentureReviewNudge::reviewUrl('xx') === 'https://megventure.com/en/testimonials/write?id_product=LAC_PRODUCT_ID',
+ok(MegVentureReviewNudge::reviewUrl('xx') === 'https://megventure.com/en/testimonials/write?id_product=95',
    'a language megventure.com does not serve falls back to en');
 
 echo "\n9) ensureInstalledAt(): no timestamp -> gets one, not shown immediately; existing kept\n";
