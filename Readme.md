@@ -23,6 +23,8 @@ asking the customer to screenshot everything.
   and/or order pages, and whether it opens in a new tab.
 - No storefront footprint, no database tables, no theme edits, no external calls
   from the shop.
+- Translated into 8 languages: English, Spanish, French, German, Italian, Dutch,
+  Polish and Turkish.
 
 ## Quick start
 

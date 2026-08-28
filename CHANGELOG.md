@@ -23,6 +23,8 @@ First MEG Venture release. Rebranded and re-secured from the open-source
   configure page.
 - Plain-PHP test suites for the token (`tests/TokenTest.php`) and the
   review-request line (`tests/ReviewNudgeTest.php`).
+- Available in 8 languages: English, Spanish, French, German, Italian, Dutch,
+  Polish and Turkish.
 
 ### Changed / Security
 - **Replaced the fixed authorization token.** The original module authorised its
