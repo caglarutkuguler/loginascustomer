@@ -4,6 +4,18 @@ All notable changes to this module are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-08-28
+
+### Fixed
+- **Order page crash on PrestaShop 8.1+ / 9** (`ClassNotFoundError` for
+  `ActionsBarButton`). The order-toolbar button class was moved from
+  `PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButton` (1.7.7–8.0) to
+  `PrestaShop\PrestaShop\Core\Action\ActionsBarButton` (8.1+/9); the module now
+  detects whichever the running core ships and adds no toolbar button if neither
+  exists.
+- All back-office hooks now degrade gracefully (`catch (Throwable)`) so a module
+  error can never white-screen a customer or order page.
+
 ## [1.0.0] - 2026-08-28
 
 First MEG Venture release. Rebranded and re-secured from the open-source

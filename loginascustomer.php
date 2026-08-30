@@ -27,7 +27,7 @@ class LoginAsCustomer extends Module
     {
         $this->name = 'loginascustomer';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'MEG Venture';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -315,7 +315,11 @@ class LoginAsCustomer extends Module
             return '';
         }
 
-        return $this->renderConnectCard($this->resolveCustomerId($params));
+        try {
+            return $this->renderConnectCard($this->resolveCustomerId($params));
+        } catch (\Throwable $e) {
+            return '';
+        }
     }
 
     public function hookDisplayAdminOrder($params)
@@ -324,7 +328,11 @@ class LoginAsCustomer extends Module
             return '';
         }
 
-        return $this->renderConnectCard($this->resolveCustomerId($params));
+        try {
+            return $this->renderConnectCard($this->resolveCustomerId($params));
+        } catch (\Throwable $e) {
+            return '';
+        }
     }
 
     /**
@@ -340,30 +348,42 @@ class LoginAsCustomer extends Module
             return;
         }
 
-        $order = new Order((int) $params['id_order']);
-        if (!Validate::isLoadedObject($order)) {
+        // The button class moved namespaces in PrestaShop 8.1: it lived at
+        // PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButton on
+        // 1.7.7-8.0, and at PrestaShop\PrestaShop\Core\Action\ActionsBarButton
+        // on 8.1+ / 9. Pick whichever the running core actually ships; if the
+        // API is absent (older cores) the displayAdminOrder panel is the entry
+        // point, so we simply add no toolbar button.
+        $buttonClass = null;
+        if (class_exists('PrestaShop\\PrestaShop\\Core\\Action\\ActionsBarButton')) {
+            $buttonClass = 'PrestaShop\\PrestaShop\\Core\\Action\\ActionsBarButton';
+        } elseif (class_exists('PrestaShopBundle\\Controller\\Admin\\Sell\\Order\\ActionsBarButton')) {
+            $buttonClass = 'PrestaShopBundle\\Controller\\Admin\\Sell\\Order\\ActionsBarButton';
+        }
+        if ($buttonClass === null) {
             return;
         }
 
-        $link = $this->buildConnectLink((int) $order->id_customer);
-        if ($link === null) {
-            return;
-        }
+        try {
+            $order = new Order((int) $params['id_order']);
+            if (!Validate::isLoadedObject($order)) {
+                return;
+            }
 
-        $newTab = (bool) Configuration::get('LOGINASCUSTOMER_NEWTAB');
-        $attributes = array('href' => $link);
-        if ($newTab) {
-            $attributes['target'] = '_blank';
-        }
+            $link = $this->buildConnectLink((int) $order->id_customer);
+            if ($link === null) {
+                return;
+            }
 
-        /** @var \PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButtonsCollection $bar */
-        $bar = $params['actions_bar_buttons_collection'];
-        $bar->add(
-            new \PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButton(
-                'btn-secondary',
-                $attributes,
-                $this->l('Log in as customer')
-            )
-        );
+            $attributes = array('href' => $link);
+            if ((bool) Configuration::get('LOGINASCUSTOMER_NEWTAB')) {
+                $attributes['target'] = '_blank';
+            }
+
+            $bar = $params['actions_bar_buttons_collection'];
+            $bar->add(new $buttonClass('btn-secondary', $attributes, $this->l('Log in as customer')));
+        } catch (\Throwable $e) {
+            // Never let the toolbar button break the order page.
+        }
     }
 }
