@@ -10,7 +10,7 @@ if (!defined('_PS_VERSION_')) {
 
 /**
  * ============================================================================
- *  MegVentureReviewNudge — drop-in review-request line for the configuration
+ *  LoginAsCustomerReviewNudge — drop-in review-request line for the configuration
  *  page of MEG Venture modules.
  *
  *  A single line asking the merchant to leave a review, shown only on this
@@ -25,7 +25,12 @@ if (!defined('_PS_VERSION_')) {
  *  values named by configurationKeys().
  *  -----------------------------------------------------------------------
  */
-class MegVentureReviewNudge
+// The class name carries the module name on purpose. Every MEG Venture module
+// ships its own copy of this file with its own constants, and PHP has a single
+// class table: with a shared name, the second copy loaded in one request dies
+// with "Cannot declare class", which the module manager reports as
+// "Could not perform action upgrade for module undefined".
+class LoginAsCustomerReviewNudge
 {
     /* Everything module-specific lives in these constants. */
     const CONFIG_PREFIX = 'LOGINASCUSTOMER_';

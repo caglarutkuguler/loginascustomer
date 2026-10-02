@@ -113,7 +113,7 @@ $configureUrl = 'index.php?controller=AdminModules&configure=loginascustomer';
 $fake = new FakeNudgeModule('tr');
 
 echo "1) Keys carry the module prefix\n";
-$keys = MegVentureReviewNudge::configurationKeys();
+$keys = LoginAsCustomerReviewNudge::configurationKeys();
 ok(count($keys) === 3, 'exactly three configuration keys');
 $unprefixed = array_filter($keys, function ($k) { return strpos($k, 'LOGINASCUSTOMER_') !== 0; });
 ok($unprefixed === array(), 'all three carry the LOGINASCUSTOMER_ prefix (' . implode(', ', $keys) . ')');
@@ -124,17 +124,17 @@ $m = new LoginAsCustomer();
 ok($m->install(), 'install() succeeds');
 $installedAt = (int) Configuration::get('LOGINASCUSTOMER_REVIEW_INSTALLED_AT');
 ok($installedAt > 0 && abs(time() - $installedAt) < 5, 'install() wrote the installed-at timestamp');
-ok(!MegVentureReviewNudge::shouldDisplay(), 'hidden on the day of install');
-ok(MegVentureReviewNudge::render($fake, $configureUrl) === '', 'render() returns nothing on day 0');
+ok(!LoginAsCustomerReviewNudge::shouldDisplay(), 'hidden on the day of install');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) === '', 'render() returns nothing on day 0');
 
 echo "\n3) Quiet period: day 20 hidden, day 21 shown\n";
 Configuration::$store['LOGINASCUSTOMER_REVIEW_INSTALLED_AT'] = (string) (time() - 20 * DAY);
-ok(!MegVentureReviewNudge::shouldDisplay(), 'day 20: hidden');
+ok(!LoginAsCustomerReviewNudge::shouldDisplay(), 'day 20: hidden');
 Configuration::$store['LOGINASCUSTOMER_REVIEW_INSTALLED_AT'] = (string) (time() - 21 * DAY);
-ok(MegVentureReviewNudge::shouldDisplay(), 'day 21: shown');
+ok(LoginAsCustomerReviewNudge::shouldDisplay(), 'day 21: shown');
 
 echo "\n4) The line itself\n";
-$html = MegVentureReviewNudge::render($fake, $configureUrl);
+$html = LoginAsCustomerReviewNudge::render($fake, $configureUrl);
 ok(strpos($html, 'Happy with this module?') !== false, 'render() contains the request text');
 ok(strpos($html, 'loginascustomer_review_go=1') !== false, 'render() contains the review link');
 ok(strpos($html, 'loginascustomer_review_dismiss=1') !== false, 'render() contains the dismiss link');
@@ -143,48 +143,48 @@ ok((int) Configuration::get('LOGINASCUSTOMER_REVIEW_DISPLAYS') === 1, 'the view 
 
 echo "\n5) Three unanswered displays, hidden on the fourth\n";
 Configuration::$store['LOGINASCUSTOMER_REVIEW_DISPLAYS'] = '0';
-ok(MegVentureReviewNudge::render($fake, $configureUrl) !== '', 'display 1 shown');
-ok(MegVentureReviewNudge::render($fake, $configureUrl) !== '', 'display 2 shown');
-ok(MegVentureReviewNudge::render($fake, $configureUrl) !== '', 'display 3 shown');
-ok(MegVentureReviewNudge::render($fake, $configureUrl) === '', 'display 4: given up');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) !== '', 'display 1 shown');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) !== '', 'display 2 shown');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) !== '', 'display 3 shown');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) === '', 'display 4: given up');
 ok((int) Configuration::get('LOGINASCUSTOMER_REVIEW_DISPLAYS') === 3, 'counter stopped at 3');
 
 echo "\n6) A form-POST re-render is shown but not counted\n";
 Configuration::$store['LOGINASCUSTOMER_REVIEW_DISPLAYS'] = '1';
 $_POST['submitLoginAsCustomer'] = '1';
-ok(MegVentureReviewNudge::render($fake, $configureUrl) !== '', 'still shown while saving settings');
+ok(LoginAsCustomerReviewNudge::render($fake, $configureUrl) !== '', 'still shown while saving settings');
 ok((int) Configuration::get('LOGINASCUSTOMER_REVIEW_DISPLAYS') === 1, 'but the save re-render did not burn a display');
 $_POST = array();
 
 echo "\n7) Dismissed: hidden forever\n";
 Configuration::$store['LOGINASCUSTOMER_REVIEW_DISPLAYS'] = '0';
 Tools::$values = array('loginascustomer_review_dismiss' => '1');
-$banner = MegVentureReviewNudge::handleRequest($fake);
+$banner = LoginAsCustomerReviewNudge::handleRequest($fake);
 Tools::$values = array();
 ok(strpos($banner, 'we will not ask again') !== false, 'dismiss answers with a confirmation');
 ok((int) Configuration::get('LOGINASCUSTOMER_REVIEW_DISMISSED') === 1, 'dismissed flag written');
-ok(!MegVentureReviewNudge::shouldDisplay(), 'hidden right after dismissing');
+ok(!LoginAsCustomerReviewNudge::shouldDisplay(), 'hidden right after dismissing');
 
 echo "\n8) Review link clicked: recorded, redirected, hidden forever\n";
 Configuration::$store = array('LOGINASCUSTOMER_REVIEW_INSTALLED_AT' => (string) (time() - 30 * DAY));
 Tools::$redirectedTo = null;
 Tools::$values = array('loginascustomer_review_go' => '1');
-MegVentureReviewNudge::handleRequest($fake);
+LoginAsCustomerReviewNudge::handleRequest($fake);
 Tools::$values = array();
 ok(Tools::$redirectedTo === 'https://megventure.com/tr/testimonials/write?id_product=95',
    'redirected to the review form in the BO language (' . Tools::$redirectedTo . ')');
-ok(!MegVentureReviewNudge::shouldDisplay(), 'never shown again after the click');
-ok(MegVentureReviewNudge::reviewUrl('xx') === 'https://megventure.com/en/testimonials/write?id_product=95',
+ok(!LoginAsCustomerReviewNudge::shouldDisplay(), 'never shown again after the click');
+ok(LoginAsCustomerReviewNudge::reviewUrl('xx') === 'https://megventure.com/en/testimonials/write?id_product=95',
    'a language megventure.com does not serve falls back to en');
 
 echo "\n9) ensureInstalledAt(): no timestamp -> gets one, not shown immediately; existing kept\n";
 Configuration::$store = array('LOGINASCUSTOMER_ON_ORDER' => '1');
-ok(MegVentureReviewNudge::ensureInstalledAt() === true, 'ensureInstalledAt() succeeds');
+ok(LoginAsCustomerReviewNudge::ensureInstalledAt() === true, 'ensureInstalledAt() succeeds');
 $stamp = (int) Configuration::get('LOGINASCUSTOMER_REVIEW_INSTALLED_AT');
 ok($stamp > 0 && abs(time() - $stamp) < 5, 'a missing timestamp was written with the current time');
-ok(!MegVentureReviewNudge::shouldDisplay(), 'not shown immediately after being stamped');
+ok(!LoginAsCustomerReviewNudge::shouldDisplay(), 'not shown immediately after being stamped');
 Configuration::$store['LOGINASCUSTOMER_REVIEW_INSTALLED_AT'] = '12345';
-MegVentureReviewNudge::ensureInstalledAt();
+LoginAsCustomerReviewNudge::ensureInstalledAt();
 ok(Configuration::get('LOGINASCUSTOMER_REVIEW_INSTALLED_AT') === '12345', 'an existing timestamp is never overwritten');
 
 echo "\n10) Uninstall removes the three review keys and touches nothing foreign\n";
@@ -196,7 +196,7 @@ Configuration::$store = array(
     'theme' => 'another-modules-value',
     'MEGTESTIMONIAL_WHO' => 'another-modules-value',
 );
-MegVentureReviewNudge::onUninstall();
+LoginAsCustomerReviewNudge::onUninstall();
 $reviewLeft = array_filter(array_keys(Configuration::$store), function ($k) { return strpos($k, 'LOGINASCUSTOMER_REVIEW_') === 0; });
 ok($reviewLeft === array(), 'onUninstall() removed all three review keys');
 ok(Configuration::get('LOGINASCUSTOMER_ON_ORDER') === '1', 'a non-review module key was left for the module');

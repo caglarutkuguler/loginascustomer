@@ -27,7 +27,7 @@ class LoginAsCustomer extends Module
     {
         $this->name = 'loginascustomer';
         $this->tab = 'administration';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'MEG Venture';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -51,12 +51,12 @@ class LoginAsCustomer extends Module
             && Configuration::updateValue('LOGINASCUSTOMER_ON_CUSTOMER', 1)
             && Configuration::updateValue('LOGINASCUSTOMER_ON_ORDER', 1)
             && Configuration::updateValue('LOGINASCUSTOMER_NEWTAB', 1)
-            && MegVentureReviewNudge::onInstall();
+            && LoginAsCustomerReviewNudge::onInstall();
     }
 
     public function uninstall()
     {
-        MegVentureReviewNudge::onUninstall();
+        LoginAsCustomerReviewNudge::onUninstall();
 
         foreach (array(
             'LOGINASCUSTOMER_LANDING',
@@ -77,7 +77,7 @@ class LoginAsCustomer extends Module
      */
     public function getContent()
     {
-        $output = MegVentureReviewNudge::handleRequest($this);
+        $output = LoginAsCustomerReviewNudge::handleRequest($this);
 
         if (Tools::isSubmit('submitLoginAsCustomer')) {
             $output .= $this->postProcess();
@@ -87,7 +87,7 @@ class LoginAsCustomer extends Module
         $output .= $this->renderForm();
 
         $configureUrl = $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name;
-        $output .= MegVentureReviewNudge::render($this, $configureUrl);
+        $output .= LoginAsCustomerReviewNudge::render($this, $configureUrl);
 
         require_once dirname(__FILE__) . '/classes/MegVentureAdsWidget.php';
         $output .= MegVentureAdsWidget::render('https://megventure.com/index.php?fc=module&module=virtualproductcombination&controller=adswidget');

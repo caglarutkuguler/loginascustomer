@@ -4,6 +4,20 @@ All notable changes to this module are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.3
+
+### Fixed
+
+- **Other MEG Venture modules failed to upgrade while this one was
+  installed** ("Could not perform action upgrade for module undefined"). The
+  review-request helper was declared as `MegVentureReviewNudge`, a class name
+  every MEG Venture module with the same feature also uses for its own copy,
+  and this module loads its copy at the top of its main file. So whenever
+  another module's install or upgrade script loaded its own copy in the same
+  request, PHP stopped with "Cannot declare class". The class is now
+  `LoginAsCustomerReviewNudge`; the file name and the translations are
+  unchanged.
+
 ## 1.0.2
 
 ### Fixed

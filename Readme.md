@@ -1,6 +1,6 @@
 # Login As Customer — One-Click Support Access
 
-**Version:** 1.0.2
+**Version:** 1.0.3
 
 A free MEG Venture module for PrestaShop **1.6, 1.7, 8 and 9**.
 
