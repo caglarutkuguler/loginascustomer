@@ -1,1 +1,0 @@
-MEG-1052 regression probe: unmapped repo must still deploy with webhook-gitdirs.json present. Temporary; removed by the next commit.
