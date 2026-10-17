@@ -43,12 +43,52 @@ class LoginascustomerLoginModuleFrontController extends ModuleFrontController
         $idEmployee = (int) Tools::getValue('id_employee');
         $token = Tools::getValue('lac_token');
 
-        if ($idCustomer <= 0 || !LoginAsCustomerToken::isValid($idCustomer, $idEmployee, $token)) {
+        if ($idCustomer <= 0 || $idEmployee <= 0) {
+            Tools::redirect('index.php');
+        }
+
+        // Employee must still exist and be active — a fired staffer's link must die.
+        $employee = new Employee($idEmployee);
+        if (!Validate::isLoadedObject($employee) || !(bool) $employee->active) {
+            Tools::redirect('index.php');
+        }
+
+        // redeem() validates HMAC+TTL and atomically marks the jti used (single-use).
+        $redeem = LoginAsCustomerToken::redeem($idCustomer, $idEmployee, $token);
+        if ($redeem['status'] === 'already_used' && !empty($redeem['jti']) && class_exists('PrestaShopLogger')) {
+            // Same jti twice is the merchant-facing replay signal (disclosure audit sentence).
+            PrestaShopLogger::addLog(
+                sprintf(
+                    'Login As Customer: rejected replay of jti %s (employee #%d, customer #%d)',
+                    $redeem['jti'],
+                    $idEmployee,
+                    $idCustomer
+                ),
+                2,
+                null,
+                'Customer',
+                $idCustomer,
+                true,
+                $idEmployee > 0 ? $idEmployee : null
+            );
+        }
+        if ($redeem['status'] === 'schema_missing' && class_exists('PrestaShopLogger')) {
+            PrestaShopLogger::addLog(
+                'Login As Customer: loginascustomer_used table missing; connect refused',
+                3,
+                null,
+                'Module',
+                null,
+                true,
+                $idEmployee > 0 ? $idEmployee : null
+            );
+        }
+        if ($redeem['status'] !== 'consumed') {
             Tools::redirect('index.php');
         }
 
         $customer = new Customer($idCustomer);
-        if (!Validate::isLoadedObject($customer)) {
+        if (!Validate::isLoadedObject($customer) || !(bool) $customer->active) {
             Tools::redirect('index.php');
         }
 
@@ -77,14 +117,15 @@ class LoginascustomerLoginModuleFrontController extends ModuleFrontController
             $this->context->cookie->write();
         }
 
-        // Audit trail: who impersonated whom.
+        // Audit trail: who impersonated whom, with jti for replay correlation.
         if (class_exists('PrestaShopLogger')) {
             PrestaShopLogger::addLog(
                 sprintf(
-                    'Login As Customer: employee #%d connected as customer #%d (%s)',
+                    'Login As Customer: employee #%d connected as customer #%d (%s) jti=%s',
                     $idEmployee,
                     $idCustomer,
-                    $customer->email
+                    $customer->email,
+                    $redeem['jti']
                 ),
                 1,
                 null,
