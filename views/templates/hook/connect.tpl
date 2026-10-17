@@ -43,7 +43,7 @@ h3 .material-icons.mv-ico,
             </p>
             <p class="help-block">
                 {l s='Opens the storefront in a session signed in as this customer, so you can see exactly what they see.' mod='loginascustomer'}
-                {l s='The link is single-purpose and expires after %d minutes.' sprintf=[$lac_ttl] mod='loginascustomer'}
+                {l s='The link works once and expires after %d minutes.' sprintf=[$lac_ttl] mod='loginascustomer'}
             </p>
         {/if}
     </div>

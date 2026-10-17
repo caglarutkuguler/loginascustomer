@@ -4,6 +4,31 @@ All notable changes to this module are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.4
+
+### Security
+
+- **Connect links are now single-use.** Each minted URL carries a `jti` that is
+  recorded on first successful login; a replay of the same URL (Referer leak,
+  shared screen recording, browser history) no longer impersonates the customer.
+- **Module-scoped HMAC secret** (`LOGINASCUSTOMER_SECRET`) instead of relying
+  only on `_COOKIE_KEY_` material (MEG-85 hybrid A path for this module).
+- **Employee must still be active** when the link is redeemed; a deactivated
+  staff account cannot keep using outstanding links.
+- **SSL when available:** `getModuleLink(..., $ssl = PS_SSL_ENABLED)` so the
+  bearer URL is not emitted over cleartext on SSL shops.
+- **Default TTL** reduced from 60 to **15** minutes (configurable 5–1440).
+- **Audit log includes `jti`** on success and on rejected replay, so merchants can
+  correlate duplicate connect attempts in Advanced Parameters → Logs (disclosure
+  audit sentence).
+- **Missing `loginascustomer_used` table fails loud** in BO (error banner + status
+  line + repair button) and refuses to mint connect links; FO redeem stays fail-closed.
+
+### Changed
+
+- Token shape is now `expiry.jti.signature`. Pre-1.0.3 two-part links stop
+  working after upgrade; generate a fresh link from BO.
+
 ## 1.0.3
 
 ### Fixed

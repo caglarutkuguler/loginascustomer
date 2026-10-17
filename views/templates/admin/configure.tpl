@@ -43,13 +43,22 @@ h3 .material-icons.mv-ico,
                 <li>{l s='The storefront opens in a session signed in as that customer, so you can reproduce what they report, check prices, vouchers, group access and cart, then close the tab.' mod='loginascustomer'}</li>
             </ol>
             <p class="text-muted">
-                {l s='Each button builds a fresh, signed link that only opens that one customer and expires by itself. Every connection is written to the back-office logs (who connected as whom).' mod='loginascustomer'}
+                {l s='Each button builds a fresh, signed link that only opens that one customer, expires by itself, and can be used once. Every connection (and every rejected replay of the same link id) is written to Advanced Parameters → Logs.' mod='loginascustomer'}
             </p>
         </div>
         <div class="col-lg-5">
             <div class="panel">
                 <div class="panel-heading">{l s='Status' mod='loginascustomer'}</div>
                 <ul class="list-unstyled">
+                    <li>
+                        {if $lac_schema_ok}
+                            <span class="text-success">{if $mv_ms}<i class="material-icons mv-ico">check</i>{else}<i class="icon icon-check"></i>{/if}</span>
+                            {l s='Single-use token table is present' mod='loginascustomer'}
+                        {else}
+                            <span class="text-danger">{if $mv_ms}<i class="material-icons mv-ico">error</i>{else}<i class="icon icon-remove"></i>{/if}</span>
+                            {l s='Single-use token table is missing — connect links are disabled until it is recreated.' mod='loginascustomer'}
+                        {/if}
+                    </li>
                     <li>
                         {if $lac_on_customer}
                             <span class="text-success">{if $mv_ms}<i class="material-icons mv-ico">check</i>{else}<i class="icon icon-check"></i>{/if}</span>

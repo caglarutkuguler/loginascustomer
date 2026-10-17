@@ -27,7 +27,7 @@ class LoginAsCustomer extends Module
     {
         $this->name = 'loginascustomer';
         $this->tab = 'administration';
-        $this->version = '1.0.3';
+        $this->version = '1.0.4';
         $this->author = 'MEG Venture';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -42,12 +42,15 @@ class LoginAsCustomer extends Module
 
     public function install()
     {
+        LoginAsCustomerToken::ensureSecret();
+
         return parent::install()
+            && LoginAsCustomerToken::installSchema()
             && $this->registerHook('displayAdminCustomers')
             && $this->registerHook('displayAdminOrder')
             && $this->registerHook('actionGetAdminOrderButtons')
             && Configuration::updateValue('LOGINASCUSTOMER_LANDING', 'my-account')
-            && Configuration::updateValue('LOGINASCUSTOMER_TTL', 60)
+            && Configuration::updateValue('LOGINASCUSTOMER_TTL', 15)
             && Configuration::updateValue('LOGINASCUSTOMER_ON_CUSTOMER', 1)
             && Configuration::updateValue('LOGINASCUSTOMER_ON_ORDER', 1)
             && Configuration::updateValue('LOGINASCUSTOMER_NEWTAB', 1)
@@ -57,6 +60,7 @@ class LoginAsCustomer extends Module
     public function uninstall()
     {
         LoginAsCustomerReviewNudge::onUninstall();
+        LoginAsCustomerToken::uninstallSchema();
 
         foreach (array(
             'LOGINASCUSTOMER_LANDING',
@@ -64,6 +68,7 @@ class LoginAsCustomer extends Module
             'LOGINASCUSTOMER_ON_CUSTOMER',
             'LOGINASCUSTOMER_ON_ORDER',
             'LOGINASCUSTOMER_NEWTAB',
+            'LOGINASCUSTOMER_SECRET',
         ) as $key) {
             Configuration::deleteByName($key);
         }
@@ -79,6 +84,25 @@ class LoginAsCustomer extends Module
     {
         $output = LoginAsCustomerReviewNudge::handleRequest($this);
 
+        if (Tools::isSubmit('submitLoginAsCustomerRepairSchema')) {
+            if (LoginAsCustomerToken::installSchema() && LoginAsCustomerToken::schemaExists()) {
+                $output .= $this->displayConfirmation(
+                    $this->l('The single-use token table was recreated. Connect links work again.')
+                );
+            } else {
+                $output .= $this->displayError(
+                    $this->l('Could not create the single-use token table. Check the database user permissions (CREATE TABLE) and try again.')
+                );
+            }
+        }
+
+        if (!LoginAsCustomerToken::schemaExists()) {
+            $output .= $this->displayError(
+                $this->l('The single-use token table (loginascustomer_used) is missing. Connect links will not work until it is recreated. Use the repair button below, or reset the module.')
+            );
+            $output .= $this->renderSchemaRepairForm();
+        }
+
         if (Tools::isSubmit('submitLoginAsCustomer')) {
             $output .= $this->postProcess();
         }
@@ -93,6 +117,22 @@ class LoginAsCustomer extends Module
         $output .= MegVentureAdsWidget::render('https://megventure.com/index.php?fc=module&module=virtualproductcombination&controller=adswidget');
 
         return $output;
+    }
+
+    /**
+     * One-click recreate of the jti ledger when upgrade left the shop without it.
+     *
+     * @return string
+     */
+    private function renderSchemaRepairForm()
+    {
+        $action = AdminController::$currentIndex . '&configure=' . $this->name
+            . '&token=' . Tools::getAdminTokenLite('AdminModules');
+
+        return '<form method="post" action="' . htmlspecialchars($action, ENT_QUOTES, 'UTF-8') . '" class="form-horizontal">'
+            . '<button type="submit" name="submitLoginAsCustomerRepairSchema" value="1" class="btn btn-warning">'
+            . htmlspecialchars($this->l('Recreate single-use token table'), ENT_QUOTES, 'UTF-8')
+            . '</button></form><br/>';
     }
 
     private function postProcess()
@@ -124,6 +164,7 @@ class LoginAsCustomer extends Module
             'lac_on_customer' => (bool) Configuration::get('LOGINASCUSTOMER_ON_CUSTOMER'),
             'lac_on_order' => (bool) Configuration::get('LOGINASCUSTOMER_ON_ORDER'),
             'lac_ttl' => (int) Configuration::get('LOGINASCUSTOMER_TTL'),
+            'lac_schema_ok' => LoginAsCustomerToken::schemaExists(),
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/configure.tpl');
@@ -235,7 +276,21 @@ class LoginAsCustomer extends Module
         }
 
         $idEmployee = isset($this->context->employee->id) ? (int) $this->context->employee->id : 0;
+        if ($idEmployee <= 0) {
+            return null;
+        }
+
+        // Fail closed: without the jti ledger, a minted link could be replayed.
+        if (!LoginAsCustomerToken::schemaExists()) {
+            return null;
+        }
+
+        LoginAsCustomerToken::ensureSecret();
         $token = LoginAsCustomerToken::generate($idCustomer, $idEmployee);
+
+        // Prefer absolute HTTPS when the shop has SSL — the connect URL is a
+        // bearer credential; never emit it over cleartext when SSL is available.
+        $ssl = (bool) Configuration::get('PS_SSL_ENABLED');
 
         return $this->context->link->getModuleLink(
             'loginascustomer',
@@ -245,7 +300,7 @@ class LoginAsCustomer extends Module
                 'id_employee' => $idEmployee,
                 'lac_token' => $token,
             ),
-            null
+            $ssl
         );
     }
 
