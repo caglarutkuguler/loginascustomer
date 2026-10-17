@@ -25,6 +25,17 @@ define('_DB_PREFIX_', 'ps_');
 define('_MYSQL_ENGINE_', 'InnoDB');
 define('_COOKIE_KEY_', 'unit-test-cookie-key');
 
+class Db
+{
+    public static function getInstance() { return new self(); }
+    public function execute($sql) { return true; }
+    public function getValue($sql) { return false; }
+    public function getRow($sql) { return false; }
+    public function executeS($sql) { return array(); }
+    public function insert($t, $d) { return true; }
+    public function delete($t, $w = "") { return true; }
+}
+
 class Configuration
 {
     public static $store = array();
