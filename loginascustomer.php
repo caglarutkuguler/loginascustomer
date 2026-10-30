@@ -114,7 +114,7 @@ class LoginAsCustomer extends Module
         $output .= LoginAsCustomerReviewNudge::render($this, $configureUrl);
 
         require_once dirname(__FILE__) . '/classes/MegVentureAdsWidget.php';
-        $output .= MegVentureAdsWidget::render('https://megventure.com/index.php?fc=module&module=virtualproductcombination&controller=adswidget');
+        $output .= MegVentureAdsWidgetV2::render('https://megventure.com/index.php?fc=module&module=virtualproductcombination&controller=adswidget');
 
         return $output;
     }
