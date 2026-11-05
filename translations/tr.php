@@ -44,3 +44,5 @@ $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_4d170dcb0d03a0efa01
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_6ecbf3c5ab7a06f08c526f02bce2b2d6'] = 'Değerlendirme yaz';
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_8ad4303b83a62fb6ca3b025bad5bc114'] = 'Hayır, teşekkürler';
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_c980491d2b999421c4aa1ef4449323e1'] = 'Modülden memnun kaldınız mı? Kısa bir değerlendirme, diğer satıcıların modülü bulmasına yardımcı olur.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2831420e2c343c00fc80bb8b4634e559'] = 'Bu modülün güncellemelerini tek tıkla almak için ücretsiz MEG Venture Updates modülünü kurun.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_9ffdb95250e26c7a6b468126ac7c75b0'] = 'Nasıl çalışır';

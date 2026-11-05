@@ -44,3 +44,5 @@ $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_4d170dcb0d03a0efa01
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_6ecbf3c5ab7a06f08c526f02bce2b2d6'] = 'Laisser un avis';
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_8ad4303b83a62fb6ca3b025bad5bc114'] = 'Non merci';
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_c980491d2b999421c4aa1ef4449323e1'] = 'Satisfait de ce module ? Un court avis aide d\'autres marchands à le découvrir.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2831420e2c343c00fc80bb8b4634e559'] = 'Recevez les mises à jour de ce module en un clic : installez le module gratuit MEG Venture Updates.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_9ffdb95250e26c7a6b468126ac7c75b0'] = 'Comment ça marche';
