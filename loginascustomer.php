@@ -27,7 +27,7 @@ class LoginAsCustomer extends Module
     {
         $this->name = 'loginascustomer';
         $this->tab = 'administration';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'MEG Venture';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -378,6 +378,50 @@ class LoginAsCustomer extends Module
     }
 
     /**
+     * Whether the signed-in back-office employee may manage the customer's shop.
+     * Always true without multistore (single shop: nothing changes).
+     *
+     * @param Customer $customer
+     *
+     * @return bool
+     */
+    private function employeeMayConnect($customer)
+    {
+        return LoginAsCustomerToken::employeeMayAccessShop(
+            isset($this->context->employee) ? $this->context->employee : null,
+            (int) $customer->id_shop
+        );
+    }
+
+    /**
+     * Audit-log line for a connect refused because the employee has no access to
+     * the customer's shop.
+     *
+     * @param Customer $customer
+     * @param int      $idEmployee
+     */
+    private function logRefusedConnect($customer, $idEmployee)
+    {
+        if (!class_exists('PrestaShopLogger')) {
+            return;
+        }
+        PrestaShopLogger::addLog(
+            sprintf(
+                'Login As Customer: refused, employee #%d has no access to shop #%d of customer #%d',
+                (int) $idEmployee,
+                (int) $customer->id_shop,
+                (int) $customer->id
+            ),
+            2,
+            null,
+            'Customer',
+            (int) $customer->id,
+            true,
+            (int) $idEmployee > 0 ? (int) $idEmployee : null
+        );
+    }
+
+    /**
      * Multistore variant of the connect link: built for the customer's own shop
      * (its domain, SSL setting and default language), not for the back-office
      * context shop, and bound to that shop inside the signed token.
@@ -404,7 +448,14 @@ class LoginAsCustomer extends Module
         $idShop = (int) $shop->id;
         $idGroup = (int) $shop->id_shop_group;
 
-        $token = LoginAsCustomerToken::generate($idCustomer, $idEmployee, $idShop, $idGroup);
+        // The employee must be allowed to manage the customer's shop.
+        if (!$this->employeeMayConnect($customer)) {
+            $this->logRefusedConnect($customer, $idEmployee);
+
+            return null;
+        }
+
+        $token =LoginAsCustomerToken::generate($idCustomer, $idEmployee, $idShop, $idGroup);
 
         // SSL is a per-shop setting: read the customer's shop, not the context shop.
         $ssl = (bool) Configuration::get('PS_SSL_ENABLED', null, $idGroup, $idShop);
@@ -474,6 +525,16 @@ class LoginAsCustomer extends Module
         $customer = new Customer($idCustomer);
         if (!Validate::isLoadedObject($customer)) {
             return '';
+        }
+
+        // Multistore: an employee without access to the customer's shop gets an
+        // explanation instead of a button (and no link is minted).
+        if (LoginAsCustomerToken::multistoreActive() && !$this->employeeMayConnect($customer)) {
+            $this->logRefusedConnect($customer, isset($this->context->employee->id) ? (int) $this->context->employee->id : 0);
+
+            return '<div class="alert alert-warning" id="loginascustomer-denied">'
+                . $this->l('You cannot log in as this customer: the customer belongs to a shop that your employee account is not allowed to manage.')
+                . '</div>';
         }
 
         $link = $this->buildConnectLink($idCustomer);

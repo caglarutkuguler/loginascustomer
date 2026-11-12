@@ -97,6 +97,31 @@ class Context
     }
 }
 
+/** Mirrors Employee::hasAuthOnShop() of 1.6.1 to 9.1: super admin or associated shop. */
+class Employee
+{
+    public $id = 0;
+    public $id_profile = 2;
+    public $associated_shops = array();
+
+    public function __construct($id, $profile, array $shops)
+    {
+        $this->id = $id;
+        $this->id_profile = $profile;
+        $this->associated_shops = $shops;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->id_profile == 1;
+    }
+
+    public function hasAuthOnShop($idShop)
+    {
+        return $this->isSuperAdmin() || in_array($idShop, $this->associated_shops);
+    }
+}
+
 require_once dirname(__DIR__) . '/classes/LoginAsCustomerToken.php';
 
 $fail = 0;
@@ -231,7 +256,7 @@ ok(strpos($main, "Configuration::get('PS_SSL_ENABLED', null, \$idGroup, \$idShop
 ok(strpos($main, 'if (LoginAsCustomerToken::multistoreActive()) {' . "\n" . '            return $this->buildMultistoreConnectLink') !== false, 'the multistore branch is gated on the feature');
 ok(strpos($main, 'if (!Shop::isFeatureActive() || Shop::getContext() == Shop::CONTEXT_SHOP) {' . "\n" . "            return '';") !== false, 'the back-office notice is gated on multistore + non-shop context');
 ok(strpos($main, 'alert alert-warning') !== false, 'the notice uses the back-office alert class');
-ok(strpos($main, "\$this->version = '1.1.0'") !== false, 'module version is 1.1.0');
+ok(strpos($main, "\$this->version = '1.1.1'") !== false, 'module version is 1.1.1');
 ok(strpos($ctrl, 'LoginAsCustomerToken::customerBelongsToCurrentShop($target)') !== false, 'the front controller checks the customer against the current shop');
 ok(strpos($ctrl, 'LoginAsCustomerToken::redeem($idCustomer, $idEmployee, $token, $idShop)') !== false, 'the front controller redeems with the current shop id');
 ok(strpos($ctrl, '(int) $this->context->shop->id') !== false, 'the redeeming shop id comes from the request context');
@@ -247,6 +272,45 @@ ok(preg_match('/getValue\(\s*\'SELECT[^;]*?LIMIT/s', $cls) === 0, 'no LIMIT insi
 $up = file_get_contents(dirname(__DIR__) . '/upgrade/upgrade-1.1.0.php');
 ok(strpos($up, 'function upgrade_module_1_1_0(') !== false && strpos($up, 'ensureSecret()') !== false, 'upgrade-1.1.0.php migrates the secret via ensureSecret()');
 ok(strpos($up, 'deleteByName') === false && stripos($up, 'DELETE ') === false, 'the upgrade deletes nothing');
+
+echo "\n10) An employee may only mint a link for a customer of a shop they can manage\n";
+$superAdmin = new Employee(1, 1, array());
+$shopAOnly = new Employee(2, 2, array(1));
+$allShops = new Employee(3, 2, array(1, 2, 3, 4));
+$nobody = new Employee(4, 2, array());
+Shop::$active = false;
+ok(LoginAsCustomerToken::employeeMayAccessShop($shopAOnly, 2), 'one shop: unchanged, always allowed');
+ok(LoginAsCustomerToken::employeeMayAccessShop(null, 2), 'one shop: not even an employee object is needed');
+Shop::$active = true;
+ok(LoginAsCustomerToken::employeeMayAccessShop($superAdmin, 2), 'multistore: super administrator may act on any shop');
+ok(LoginAsCustomerToken::employeeMayAccessShop($allShops, 4), 'multistore: employee associated with every shop may act on any shop');
+ok(LoginAsCustomerToken::employeeMayAccessShop($shopAOnly, 1), 'multistore: employee restricted to shop 1 may act on shop 1');
+ok(!LoginAsCustomerToken::employeeMayAccessShop($shopAOnly, 2), 'multistore: employee restricted to shop 1 is refused for a shop 2 customer');
+ok(!LoginAsCustomerToken::employeeMayAccessShop($nobody, 1), 'multistore: employee with no shop association is refused');
+ok(!LoginAsCustomerToken::employeeMayAccessShop($superAdmin, 0), 'multistore: a customer without a shop is refused');
+ok(!LoginAsCustomerToken::employeeMayAccessShop(null, 1), 'multistore: no employee is refused');
+ok(!LoginAsCustomerToken::employeeMayAccessShop(new Employee(0, 1, array()), 1), 'multistore: an unloaded employee is refused');
+ok(!LoginAsCustomerToken::employeeMayAccessShop(new stdClass(), 1), 'multistore: an object without hasAuthOnShop() is refused');
+Shop::$active = false;
+
+ok(strpos($main, 'LoginAsCustomerToken::employeeMayAccessShop(') !== false, 'the module checks employee shop access');
+$posMint = strpos($main, 'private function buildMultistoreConnectLink');
+$posCheck = strpos($main, '$this->employeeMayConnect($customer)', $posMint);
+$posGen = strpos($main, 'LoginAsCustomerToken::generate($idCustomer, $idEmployee, $idShop, $idGroup)');
+ok($posMint !== false && $posCheck !== false && $posGen !== false && $posCheck < $posGen, 'the employee check runs before the multistore token is minted');
+ok(strpos($main, 'multistoreActive() && !$this->employeeMayConnect($customer)') !== false, 'the connect panel is replaced by a notice for a refused employee');
+ok(strpos($main, 'has no access to shop #%d of customer #%d') !== false, 'a refused mint is written to the log');
+ok(strpos($ctrl, 'LoginAsCustomerToken::employeeMayAccessShop($employee, (int) $target->id_shop)') !== false, 'the front controller re-checks the employee against the customer shop');
+$posEmp = strpos($ctrl, 'employeeMayAccessShop');
+ok($posEmp !== false && $posEmp < $posRedeem, 'that check runs before the jti is claimed');
+ok(strpos($cls, 'hasAuthOnShop((int) $idShop)') !== false, 'the helper defers to Employee::hasAuthOnShop()');
+foreach (glob(dirname(__DIR__) . '/translations/*.php') as $tf) {
+    if (basename($tf) === 'index.php') {
+        continue;
+    }
+    $tx = file_get_contents($tf);
+    ok(strpos($tx, '>loginascustomer_' . md5('You cannot log in as this customer: the customer belongs to a shop that your employee account is not allowed to manage.') . "'") !== false, 'refusal message translated in ' . basename($tf));
+}
 
 echo "\n" . ($fail === 0 ? "OK - all passed\n" : "$fail test(s) FAILED\n");
 exit($fail === 0 ? 0 : 1);

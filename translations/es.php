@@ -47,3 +47,4 @@ $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_8ad4303b83a62fb6ca3
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_c980491d2b999421c4aa1ef4449323e1'] = '¿Contento con este módulo? Una breve reseña ayuda a que otros comerciantes lo encuentren.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_2831420e2c343c00fc80bb8b4634e559'] = 'Reciba las actualizaciones de este módulo con un clic: instale el módulo gratuito MEG Venture Updates.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_9ffdb95250e26c7a6b468126ac7c75b0'] = 'Cómo funciona';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_5641079654774905b4cbb0d9bd50b1c8'] = 'No puede iniciar sesión como este cliente: el cliente pertenece a una tienda que su cuenta de empleado no tiene permiso para gestionar.';

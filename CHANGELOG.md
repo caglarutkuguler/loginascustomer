@@ -4,6 +4,12 @@ All notable changes to this module are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.1
+
+### Security
+
+- **With multistore, an employee can now only log in as customers of a shop they are allowed to manage.** Before, an employee restricted to shop A could create a connect link for a customer of shop B. The customer's shop is now checked against the employee's shops (super administrators and employees with access to every shop are unaffected) when the link is created, and again when it is opened, so a link created before an employee lost access to that shop stops working. The page shows a notice instead of the button, and the refusal is written to the back-office log. Nothing changes with a single shop.
+
 ## 1.1.0
 
 ### Added

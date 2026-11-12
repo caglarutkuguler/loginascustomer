@@ -47,3 +47,4 @@ $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_8ad4303b83a62fb6ca3
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_c980491d2b999421c4aa1ef4449323e1'] = 'Zadowolony z tego modułu? Krótka recenzja pomaga innym sprzedawcom go znaleźć.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_2831420e2c343c00fc80bb8b4634e559'] = 'Aktualizuj ten moduł jednym kliknięciem: zainstaluj darmowy moduł MEG Venture Updates.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_9ffdb95250e26c7a6b468126ac7c75b0'] = 'Jak to działa';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_5641079654774905b4cbb0d9bd50b1c8'] = 'Nie możesz zalogować się jako ten klient: klient należy do sklepu, którym Twoje konto pracownika nie ma uprawnień zarządzać.';

@@ -47,3 +47,4 @@ $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_8ad4303b83a62fb6ca3
 $_MODULE['<{loginascustomer}prestashop>megventurereviewnudge_c980491d2b999421c4aa1ef4449323e1'] = 'Modülden memnun kaldınız mı? Kısa bir değerlendirme, diğer satıcıların modülü bulmasına yardımcı olur.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_2831420e2c343c00fc80bb8b4634e559'] = 'Bu modülün güncellemelerini tek tıkla almak için ücretsiz MEG Venture Updates modülünü kurun.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_9ffdb95250e26c7a6b468126ac7c75b0'] = 'Nasıl çalışır';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_5641079654774905b4cbb0d9bd50b1c8'] = 'Bu müşteri olarak giriş yapamazsınız: müşteri, çalışan hesabınızın yönetme yetkisi olmayan bir mağazaya ait.';

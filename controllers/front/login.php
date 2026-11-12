@@ -79,6 +79,30 @@ class LoginascustomerLoginModuleFrontController extends ModuleFrontController
                 }
                 Tools::redirect('index.php');
             }
+
+            // The employee must (still) be allowed to manage the customer's own shop:
+            // Employee::hasAuthOnShop() is true for a super administrator and for an
+            // employee associated with that shop. Also checked here, not only when the
+            // link is minted, so a revoked shop association stops outstanding links.
+            if (!LoginAsCustomerToken::employeeMayAccessShop($employee, (int) $target->id_shop)) {
+                if (class_exists('PrestaShopLogger')) {
+                    PrestaShopLogger::addLog(
+                        sprintf(
+                            'Login As Customer: refused, employee #%d has no access to shop #%d of customer #%d',
+                            $idEmployee,
+                            (int) $target->id_shop,
+                            $idCustomer
+                        ),
+                        2,
+                        null,
+                        'Customer',
+                        $idCustomer,
+                        true,
+                        $idEmployee
+                    );
+                }
+                Tools::redirect('index.php');
+            }
         }
 
         // redeem() validates HMAC+TTL (+ shop binding with multistore) and atomically

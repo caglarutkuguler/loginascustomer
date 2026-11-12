@@ -83,6 +83,33 @@ class LoginAsCustomerToken
     }
 
     /**
+     * Whether a back-office employee may act on a given shop. Always true without
+     * multistore. With multistore it defers to Employee::hasAuthOnShop(), which is
+     * true for a super administrator (profile 1) and otherwise for an employee
+     * associated with that shop; an employee "for all shops" has one association
+     * per shop, so the same call covers it. Fails closed on anything unusable.
+     *
+     * @param object $employee a loaded Employee
+     * @param int    $idShop   shop to check (the customer's own shop)
+     *
+     * @return bool
+     */
+    public static function employeeMayAccessShop($employee, $idShop)
+    {
+        if (!self::multistoreActive()) {
+            return true;
+        }
+        if (!is_object($employee) || empty($employee->id) || (int) $idShop <= 0) {
+            return false;
+        }
+        if (!method_exists($employee, 'hasAuthOnShop')) {
+            return false;
+        }
+
+        return (bool) $employee->hasAuthOnShop((int) $idShop);
+    }
+
+    /**
      * Pure form of the rule core applies to a customer login (Customer::getByEmail):
      * when the shop group shares its customers, the customer must belong to the
      * same shop group; otherwise to the very shop being logged in on.
