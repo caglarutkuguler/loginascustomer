@@ -2,6 +2,11 @@
 
 _Only customer-relevant changes are listed. Internal refactoring, tests and housekeeping are omitted._
 
+## 1.1.1
+
+### Fixed
+- With multistore, an employee can now only log in as customers of a shop they are allowed to manage. Before, an employee restricted to shop A could create a connect link for a customer of shop B. The customer's shop is now checked against the employee's shops (super administrators and employees with access to every shop are unaffected) when the link is created, and again when it is opened, so a link created before an employee lost access to that shop stops working. The page shows a notice instead of the button, and the refusal is written to the back-office log. Nothing changes with a single shop
+
 ## 1.1.0
 
 ### New
@@ -17,16 +22,3 @@ _Only customer-relevant changes are listed. Internal refactoring, tests and hous
 
 ### New
 - The configuration page links to the free MEG Venture Updates module, which installs updates for this module in one click. The line is hidden once that module is installed
-
-## 1.0.4
-
-### Improved
-- Token shape is now `expiry.jti.signature`. Pre-1.0.3 two-part links stop working after upgrade; generate a fresh link from BO
-
-### Fixed
-- Connect links are now single-use. Each minted URL carries a `jti` that is recorded on first successful login; a replay of the same URL (Referer leak, shared screen recording, browser history) no longer impersonates the customer
-- Module-scoped HMAC secret (`LOGINASCUSTOMER_SECRET`) instead of relying only on `_COOKIE_KEY_` material (MEG-85 hybrid A path for this module)
-- Employee must still be active when the link is redeemed; a deactivated staff account cannot keep using outstanding links
-- Default TTL reduced from 60 to 15 minutes (configurable 5–1440)
-- Audit log includes `jti` on success and on rejected replay, so merchants can correlate duplicate connect attempts in Advanced Parameters → Logs (disclosure audit sentence)
-- Missing `loginascustomer_used` table fails loud in BO (error banner + status line + repair button) and refuses to mint connect links; FO redeem stays fail-closed
