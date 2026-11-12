@@ -26,6 +26,7 @@ $_MODULE['<{loginascustomer}prestashop>loginascustomer_02635fd477a144270fba7a2eb
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_0667122222987682107b946b0730d282'] = 'Open storefront in a new tab';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_16185e62035d26e9bd547d52d68d4b20'] = 'Login As Customer - One-Click Support Access';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_1d1ef18c75e7ff65608134bf13819ec1'] = 'Log in to your storefront as any customer with one click, straight from the order or customer page, to see exactly what they see and give faster support.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2dc681ac1e6ddcca459bfb6b69663e59'] = 'You are viewing this page in the All shops or shop group context. Settings saved here become the default for every shop that has no value of its own. Connect links are always built for the shop the customer belongs to, whichever context you are in, and the signing secret and the single-use token ledger are shared by the whole installation. To give one shop settings of its own, select that shop in the shop selector first.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_39ed2267abd8d93c435599b8d2a43f47'] = 'Where the storefront opens after you connect as the customer.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_4b4d4e353e42e6ec111dad5683025c8d'] = 'Show on order pages';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_84239c73283806d9e03034822caf7061'] = 'The customer account page';

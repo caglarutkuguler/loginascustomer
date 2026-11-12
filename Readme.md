@@ -1,6 +1,6 @@
 # Login As Customer — One-Click Support Access
 
-**Version:** 1.0.5
+**Version:** 1.1.0
 
 A free MEG Venture module for PrestaShop **1.6, 1.7, 8 and 9**.
 
@@ -65,6 +65,17 @@ travel encrypted; the Configure page warns you if SSL is off.
 > This replaces the fixed, shop-lifetime token used by the original module,
 > which was the same value on every page and let anyone who saw it log in as any
 > customer by id. If you are migrating from that module, review your access logs.
+
+## Multistore
+
+With several shops active, the connect link is built for the shop the customer
+belongs to (that shop's domain, SSL setting and default language), whichever
+shop or All shops context you are in in the back office. The link is bound to
+that shop, and it logs in only a customer who may log in there, by the same rule
+PrestaShop uses for customer logins (the customer's own shop, or any shop of the
+group when the group shares its customers). The link lifetime is read from the
+customer's shop. The signing secret and the single-use token record are shared
+by the whole installation. With a single shop nothing changes.
 
 ## Uninstall
 

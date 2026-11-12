@@ -26,6 +26,7 @@ $_MODULE['<{loginascustomer}prestashop>loginascustomer_02635fd477a144270fba7a2eb
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_0667122222987682107b946b0730d282'] = 'Otwórz sklep w nowej karcie';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_16185e62035d26e9bd547d52d68d4b20'] = 'Zaloguj jako klient - Dostęp do wsparcia jednym kliknięciem';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_1d1ef18c75e7ff65608134bf13819ec1'] = 'Zaloguj się do swojego sklepu jako dowolny klient jednym kliknięciem, bezpośrednio ze strony zamówienia lub klienta, aby zobaczyć dokładnie to, co widzi, i szybciej udzielać wsparcia.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2dc681ac1e6ddcca459bfb6b69663e59'] = 'Ta strona jest wyświetlana w kontekście Wszystkie sklepy lub grupa sklepów. Ustawienia zapisane tutaj stają się domyślne dla każdego sklepu, który nie ma własnej wartości. Linki logowania są zawsze tworzone dla sklepu, do którego należy klient, niezależnie od kontekstu, a klucz podpisu i rejestr jednorazowych tokenów są wspólne dla całej instalacji. Aby nadać sklepowi własne ustawienia, najpierw wybierz ten sklep w selektorze sklepów.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_39ed2267abd8d93c435599b8d2a43f47'] = 'Gdzie otwiera się sklep po zalogowaniu jako klient.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_4b4d4e353e42e6ec111dad5683025c8d'] = 'Pokaż na stronach zamówień';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_84239c73283806d9e03034822caf7061'] = 'Strona konta klienta';

@@ -26,6 +26,7 @@ $_MODULE['<{loginascustomer}prestashop>loginascustomer_02635fd477a144270fba7a2eb
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_0667122222987682107b946b0730d282'] = 'Mağazayı yeni sekmede aç';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_16185e62035d26e9bd547d52d68d4b20'] = 'Müşteri Olarak Giriş - Tek Tıkla Destek Erişimi';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_1d1ef18c75e7ff65608134bf13819ec1'] = 'Sipariş veya müşteri sayfasından tek tıkla, mağazanıza herhangi bir müşteri olarak giriş yapın; müşterinin tam olarak ne gördüğünü görün ve daha hızlı destek verin.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2dc681ac1e6ddcca459bfb6b69663e59'] = 'Bu sayfayı Tüm mağazalar veya mağaza grubu bağlamında görüntülüyorsunuz. Burada kaydedilen ayarlar, kendi değeri olmayan her mağaza için varsayılan olur. Bağlantılar, hangi bağlamda olursanız olun, her zaman müşterinin ait olduğu mağaza için oluşturulur; imza anahtarı ve tek kullanımlık bağlantı kaydı ise tüm kurulum tarafından ortak kullanılır. Bir mağazaya kendi ayarlarını vermek için önce mağaza seçicisinden o mağazayı seçin.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_39ed2267abd8d93c435599b8d2a43f47'] = 'Müşteri olarak bağlandıktan sonra mağazanın açılacağı sayfa.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_4b4d4e353e42e6ec111dad5683025c8d'] = 'Sipariş sayfalarında göster';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_84239c73283806d9e03034822caf7061'] = 'Müşteri hesabı sayfası';

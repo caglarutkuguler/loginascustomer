@@ -26,6 +26,7 @@ $_MODULE['<{loginascustomer}prestashop>loginascustomer_02635fd477a144270fba7a2eb
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_0667122222987682107b946b0730d282'] = 'Winkel in een nieuw tabblad openen';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_16185e62035d26e9bd547d52d68d4b20'] = 'Aanmelden als klant - Ondersteuningstoegang met één klik';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_1d1ef18c75e7ff65608134bf13819ec1'] = 'Meld u met één klik als elke klant aan in uw winkel, rechtstreeks vanaf de bestelling of klantpagina, om precies te zien wat hij ziet en sneller te helpen.';
+$_MODULE['<{loginascustomer}prestashop>loginascustomer_2dc681ac1e6ddcca459bfb6b69663e59'] = 'U bekijkt deze pagina in de context Alle winkels of winkelgroep. Hier opgeslagen instellingen worden de standaardwaarde voor elke winkel zonder eigen waarde. Verbindingslinks worden altijd gemaakt voor de winkel waartoe de klant behoort, in welke context u ook bent, en de ondertekeningssleutel en het register van eenmalige tokens worden door de hele installatie gedeeld. Om een winkel eigen instellingen te geven, selecteert u eerst die winkel in de winkelkiezer.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_39ed2267abd8d93c435599b8d2a43f47'] = 'Waar de winkel opent nadat u zich als de klant aanmeldt.';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_4b4d4e353e42e6ec111dad5683025c8d'] = 'Tonen op bestelpagina\'s';
 $_MODULE['<{loginascustomer}prestashop>loginascustomer_84239c73283806d9e03034822caf7061'] = 'De klantaccountpagina';

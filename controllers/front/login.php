@@ -53,8 +53,37 @@ class LoginascustomerLoginModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php');
         }
 
-        // redeem() validates HMAC+TTL and atomically marks the jti used (single-use).
-        $redeem = LoginAsCustomerToken::redeem($idCustomer, $idEmployee, $token);
+        // Multistore: the customer must be able to log in on THIS shop, by the same
+        // rule core applies to a customer login (own shop, or own shop group when the
+        // group shares its customers). Checked before the jti is claimed so a link
+        // opened on the wrong domain is refused without being burned.
+        $idShop = (int) $this->context->shop->id;
+        if (LoginAsCustomerToken::multistoreActive()) {
+            $target = new Customer($idCustomer);
+            if (!Validate::isLoadedObject($target) || !LoginAsCustomerToken::customerBelongsToCurrentShop($target)) {
+                if (class_exists('PrestaShopLogger')) {
+                    PrestaShopLogger::addLog(
+                        sprintf(
+                            'Login As Customer: refused cross-shop connect (employee #%d, customer #%d, shop #%d)',
+                            $idEmployee,
+                            $idCustomer,
+                            $idShop
+                        ),
+                        2,
+                        null,
+                        'Customer',
+                        $idCustomer,
+                        true,
+                        $idEmployee
+                    );
+                }
+                Tools::redirect('index.php');
+            }
+        }
+
+        // redeem() validates HMAC+TTL (+ shop binding with multistore) and atomically
+        // marks the jti used (single-use).
+        $redeem = LoginAsCustomerToken::redeem($idCustomer, $idEmployee, $token, $idShop);
         if ($redeem['status'] === 'already_used' && !empty($redeem['jti']) && class_exists('PrestaShopLogger')) {
             // Same jti twice is the merchant-facing replay signal (disclosure audit sentence).
             PrestaShopLogger::addLog(

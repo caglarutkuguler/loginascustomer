@@ -27,7 +27,7 @@ class LoginAsCustomer extends Module
     {
         $this->name = 'loginascustomer';
         $this->tab = 'administration';
-        $this->version = '1.0.5';
+        $this->version = '1.1.0';
         $this->author = 'MEG Venture';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -106,6 +106,7 @@ class LoginAsCustomer extends Module
     public function getContent()
     {
         $output = LoginAsCustomerReviewNudge::handleRequest($this);
+        $output .= $this->renderShopContextNotice();
 
         if (Tools::isSubmit('submitLoginAsCustomerRepairSchema')) {
             if (LoginAsCustomerToken::installSchema() && LoginAsCustomerToken::schemaExists()) {
@@ -140,6 +141,50 @@ class LoginAsCustomer extends Module
         $output .= $this->renderMvuNotice() . MegVentureAdsWidgetV2::render('https://megventure.com/index.php?fc=module&module=virtualproductcombination&controller=adswidget');
 
         return $output;
+    }
+
+    /**
+     * Warning shown on the configuration page when multistore is active and the
+     * merchant is in the All shops or shop group context. Empty otherwise, so a
+     * single-shop installation sees nothing new.
+     *
+     * The module keeps no per-shop rows (the single-use ledger is installation-wide),
+     * so nothing needs refusing here: the settings are plain Configuration values,
+     * which PrestaShop itself lets you save in any context.
+     *
+     * @return string
+     */
+    private function renderShopContextNotice()
+    {
+        if (!Shop::isFeatureActive() || Shop::getContext() == Shop::CONTEXT_SHOP) {
+            return '';
+        }
+
+        return '<div class="alert alert-warning">'
+            . $this->l('You are viewing this page in the All shops or shop group context. Settings saved here become the default for every shop that has no value of its own. Connect links are always built for the shop the customer belongs to, whichever context you are in, and the signing secret and the single-use token ledger are shared by the whole installation. To give one shop settings of its own, select that shop in the shop selector first.')
+            . '</div>';
+    }
+
+    /**
+     * Shop scope (id_shop, id_shop_group) used to read the settings that belong to
+     * a customer's own shop. Both null without multistore, which keeps every
+     * Configuration lookup exactly as it was.
+     *
+     * @param Customer $customer
+     *
+     * @return array array(int|null $idShop, int|null $idShopGroup)
+     */
+    private function customerShopScope($customer)
+    {
+        if (!LoginAsCustomerToken::multistoreActive()) {
+            return array(null, null);
+        }
+        $shop = new Shop((int) $customer->id_shop);
+        if (!Validate::isLoadedObject($shop)) {
+            return array(null, null);
+        }
+
+        return array((int) $shop->id, (int) $shop->id_shop_group);
     }
 
     /**
@@ -309,6 +354,11 @@ class LoginAsCustomer extends Module
         }
 
         LoginAsCustomerToken::ensureSecret();
+
+        if (LoginAsCustomerToken::multistoreActive()) {
+            return $this->buildMultistoreConnectLink($idCustomer, $idEmployee);
+        }
+
         $token = LoginAsCustomerToken::generate($idCustomer, $idEmployee);
 
         // Prefer absolute HTTPS when the shop has SSL — the connect URL is a
@@ -325,6 +375,61 @@ class LoginAsCustomer extends Module
             ),
             $ssl
         );
+    }
+
+    /**
+     * Multistore variant of the connect link: built for the customer's own shop
+     * (its domain, SSL setting and default language), not for the back-office
+     * context shop, and bound to that shop inside the signed token.
+     * Link::getModuleLink($module, $controller, $params, $ssl, $idLang, $idShop)
+     * has this argument order on 1.6.1.24 and on 9.1.4 (checked in both cores).
+     *
+     * @param int $idCustomer
+     * @param int $idEmployee
+     *
+     * @return string|null
+     */
+    private function buildMultistoreConnectLink($idCustomer, $idEmployee)
+    {
+        $customer = new Customer((int) $idCustomer);
+        if (!Validate::isLoadedObject($customer)) {
+            return null;
+        }
+
+        // A customer whose shop no longer exists cannot log in anywhere.
+        $shop = new Shop((int) $customer->id_shop);
+        if (!Validate::isLoadedObject($shop) || (int) $shop->id <= 0 || !empty($shop->deleted)) {
+            return null;
+        }
+        $idShop = (int) $shop->id;
+        $idGroup = (int) $shop->id_shop_group;
+
+        $token = LoginAsCustomerToken::generate($idCustomer, $idEmployee, $idShop, $idGroup);
+
+        // SSL is a per-shop setting: read the customer's shop, not the context shop.
+        $ssl = (bool) Configuration::get('PS_SSL_ENABLED', null, $idGroup, $idShop);
+        $idLang = (int) Configuration::get('PS_LANG_DEFAULT', null, $idGroup, $idShop);
+
+        $link = $this->context->link->getModuleLink(
+            'loginascustomer',
+            'login',
+            array(
+                'id_customer' => $idCustomer,
+                'id_employee' => $idEmployee,
+                'lac_token' => $token,
+            ),
+            $ssl,
+            $idLang > 0 ? $idLang : null,
+            $idShop
+        );
+
+        if ($ssl) {
+            // Link decides http/https from the context shop; never send the bearer
+            // link in clear when the customer's shop has SSL.
+            $link = LoginAsCustomerToken::forceShopHttps($link, (string) $shop->domain, (string) $shop->domain_ssl);
+        }
+
+        return $link;
     }
 
     /**
@@ -376,11 +481,14 @@ class LoginAsCustomer extends Module
             return '';
         }
 
+        // The link lifetime is the customer's shop setting (the one used to mint it).
+        $scope = $this->customerShopScope($customer);
+
         $this->context->smarty->assign(array(
             'lac_link' => $link,
             'lac_customer_name' => trim($customer->firstname . ' ' . $customer->lastname),
             'lac_customer_email' => $customer->email,
-            'lac_ttl' => (int) Configuration::get('LOGINASCUSTOMER_TTL'),
+            'lac_ttl' => (int) Configuration::get('LOGINASCUSTOMER_TTL', null, $scope[1], $scope[0]),
             'lac_newtab' => (bool) Configuration::get('LOGINASCUSTOMER_NEWTAB'),
         ));
 
