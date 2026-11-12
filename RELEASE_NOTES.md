@@ -2,6 +2,17 @@
 
 _Only customer-relevant changes are listed. Internal refactoring, tests and housekeeping are omitted._
 
+## 1.1.0
+
+### New
+- Multistore support. With several shops, the connect link is now built for the shop the customer belongs to (its domain, SSL setting and default language) instead of the shop selected in the back office, and the token is bound to that shop, so a link opened on another shop's domain is refused
+- The configuration page shows a notice when you are in the All shops or shop group context
+
+### Fixed
+- The signing secret is now stored once for the whole installation. Before, it was saved for the shop selected at the time, so a link created in one shop context could fail on another shop. An existing per-shop secret is promoted, not replaced
+- A link now logs in only a customer who may log in on the shop that opens it, by the same rule PrestaShop uses for customer logins (own shop, or the whole shop group when the group shares its customers). The link lifetime is read from the customer's shop
+- Links created before this update stop working once multistore is on (15 minutes by default); create a new one. Nothing changes with a single shop
+
 ## 1.0.5
 
 ### New
@@ -19,9 +30,3 @@ _Only customer-relevant changes are listed. Internal refactoring, tests and hous
 - Default TTL reduced from 60 to 15 minutes (configurable 5–1440)
 - Audit log includes `jti` on success and on rejected replay, so merchants can correlate duplicate connect attempts in Advanced Parameters → Logs (disclosure audit sentence)
 - Missing `loginascustomer_used` table fails loud in BO (error banner + status line + repair button) and refuses to mint connect links; FO redeem stays fail-closed
-
-## 1.0.2
-
-### Fixed
-- The back-office icons turned into empty boxes on PrestaShop 9. The 10 icons the module draws for itself came from FontAwesome 4, which the back office shipped up to PrestaShop 8. PrestaShop 9 replaced it with Material Symbols Outlined, and FontAwesome now reaches the page only through `themes/default/public/theme.css` — a leftover of the old theme rather than anything the new back office asks for
-- PrestaShop 1.5 and 1.6 are the other way round — they carry FontAwesome and no Material icons at all — and this module still supports them, so the templates now pick the set the running core actually has instead of assuming one
