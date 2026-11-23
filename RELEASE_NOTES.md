@@ -2,6 +2,12 @@
 
 _Only customer-relevant changes are listed. Internal refactoring, tests and housekeeping are omitted._
 
+## 1.1.2
+
+### Fixed
+- The "How it works" step no longer calls the button blue: the back-office theme decides the colour, and on PrestaShop 9 the button is black. Updated in all eight languages
+- The module's own back-office blocks keep their frame on PrestaShop 9, which dropped the `.panel` styles the back office carried up to 8. The block on the customer and order pages, and the configuration page, no longer render without a border or padding
+
 ## 1.1.1
 
 ### Fixed
@@ -17,8 +23,3 @@ _Only customer-relevant changes are listed. Internal refactoring, tests and hous
 - The signing secret is now stored once for the whole installation. Before, it was saved for the shop selected at the time, so a link created in one shop context could fail on another shop. An existing per-shop secret is promoted, not replaced
 - A link now logs in only a customer who may log in on the shop that opens it, by the same rule PrestaShop uses for customer logins (own shop, or the whole shop group when the group shares its customers). The link lifetime is read from the customer's shop
 - Links created before this update stop working once multistore is on (15 minutes by default); create a new one. Nothing changes with a single shop
-
-## 1.0.5
-
-### New
-- The configuration page links to the free MEG Venture Updates module, which installs updates for this module in one click. The line is hidden once that module is installed
