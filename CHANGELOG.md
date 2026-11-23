@@ -15,6 +15,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   pages, and the configuration page, no longer render without a border or padding.
 
 ## 1.1.1
+- **Portuguese is complete.** `pt.php` carried only 4 of the module's 46 strings, so
+  a Portuguese back office showed the configuration page, the block on the customer
+  and order pages and the settings form in English. All 42 missing strings were
+  translated (pt-PT).
 
 ### Security
 
