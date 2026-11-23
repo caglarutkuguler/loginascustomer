@@ -15,7 +15,7 @@ $_MODULE['<{loginascustomer}prestashop>configure_9ffdb95250e26c7a6b468126ac7c75b
 $_MODULE['<{loginascustomer}prestashop>configure_b786f15f72f844a773d21643572f26df'] = 'Deze module voegt een knop "Aanmelden als klant" toe aan de back office.';
 $_MODULE['<{loginascustomer}prestashop>configure_d667e12f89eb5a8676d906375d4e8c13'] = 'Knop verborgen op klantpagina\'s';
 $_MODULE['<{loginascustomer}prestashop>configure_d97f0bac6428cc1d248d2de0d932930e'] = 'Aanmelden als klant';
-$_MODULE['<{loginascustomer}prestashop>configure_e60fa60ed4072c2199edcc8829d927ff'] = 'Klik op de blauwe knop "Aanmelden als klant".';
+$_MODULE['<{loginascustomer}prestashop>configure_9f45ccdac3847506cd8fe34359078c03'] = 'Klik op de knop \"Aanmelden als klant\".';
 $_MODULE['<{loginascustomer}prestashop>configure_ec53a8c4f07baed5d8825072c89799be'] = 'Status';
 $_MODULE['<{loginascustomer}prestashop>configure_fec728523a0d90cc1ebc2698023a7148'] = 'Knop getoond op klantpagina\'s';
 $_MODULE['<{loginascustomer}prestashop>connect_338267ae9b920c2b3e9a8baf445c43e6'] = 'De link is voor eenmalig gebruik en verloopt na %d minuten.';

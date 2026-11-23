@@ -22,11 +22,25 @@
 .material-icons.mv-ico{font-size:18px;line-height:1;vertical-align:middle;margin-right:4px;}
 .material-icons.mv-ico,.material-icons.mv-ico:hover{color:inherit;}
 h3 .material-icons.mv-ico,
-.panel-heading .material-icons.mv-ico{font-size:20px;}
+.panel-heading .material-icons.mv-ico,
+.card-header .material-icons.mv-ico{font-size:20px;}
 .btn .material-icons.mv-ico{font-size:16px;margin-right:3px;}
 {/literal}
 </style>
-<div class="panel" id="loginascustomer-panel">
+{* PrestaShop 9 dropped the .panel rules the back office carried up to 8, so a block
+   using them lost its frame. These re-create just enough of it, scoped to this module. *}
+{if $mv_psv[0] != '1' && $mv_psv[0] != '8'}
+<style>
+{literal}
+.lac-panel{background:#fff;border:1px solid #d6dbe0;border-radius:4px;margin-bottom:20px;}
+.lac-panel>.panel-heading{padding:14px 20px;border-bottom:1px solid #d6dbe0;font-size:15px;font-weight:600;color:#363a41;}
+.lac-panel>.panel-body{padding:20px;}
+.lac-panel>.row{padding:20px;margin-left:0;margin-right:0;}
+.lac-panel>.list-unstyled{padding:16px 20px;margin-bottom:0;}
+{/literal}
+</style>
+{/if}
+<div class="panel lac-panel" id="loginascustomer-panel">
     <div class="panel-heading">
         {if $mv_ms}<i class="material-icons mv-ico">login</i>{else}<i class="icon icon-sign-in"></i>{/if} {l s='Login as customer' mod='loginascustomer'}
     </div>

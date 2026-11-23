@@ -15,7 +15,7 @@ $_MODULE['<{loginascustomer}prestashop>configure_9ffdb95250e26c7a6b468126ac7c75b
 $_MODULE['<{loginascustomer}prestashop>configure_b786f15f72f844a773d21643572f26df'] = 'Ten moduł dodaje do panelu administracyjnego przycisk "Zaloguj jako klient".';
 $_MODULE['<{loginascustomer}prestashop>configure_d667e12f89eb5a8676d906375d4e8c13'] = 'Przycisk ukryty na stronach klientów';
 $_MODULE['<{loginascustomer}prestashop>configure_d97f0bac6428cc1d248d2de0d932930e'] = 'Zaloguj jako klient';
-$_MODULE['<{loginascustomer}prestashop>configure_e60fa60ed4072c2199edcc8829d927ff'] = 'Kliknij niebieski przycisk "Zaloguj jako klient".';
+$_MODULE['<{loginascustomer}prestashop>configure_9f45ccdac3847506cd8fe34359078c03'] = 'Kliknij przycisk \"Zaloguj jako klient\".';
 $_MODULE['<{loginascustomer}prestashop>configure_ec53a8c4f07baed5d8825072c89799be'] = 'Status';
 $_MODULE['<{loginascustomer}prestashop>configure_fec728523a0d90cc1ebc2698023a7148'] = 'Przycisk widoczny na stronach klientów';
 $_MODULE['<{loginascustomer}prestashop>connect_338267ae9b920c2b3e9a8baf445c43e6'] = 'Link jest jednorazowy i wygasa po %d minutach.';

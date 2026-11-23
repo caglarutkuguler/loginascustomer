@@ -15,7 +15,7 @@ $_MODULE['<{loginascustomer}prestashop>configure_9ffdb95250e26c7a6b468126ac7c75b
 $_MODULE['<{loginascustomer}prestashop>configure_b786f15f72f844a773d21643572f26df'] = 'Este módulo añade un botón "Acceder como cliente" al back office.';
 $_MODULE['<{loginascustomer}prestashop>configure_d667e12f89eb5a8676d906375d4e8c13'] = 'Botón oculto en las fichas de cliente';
 $_MODULE['<{loginascustomer}prestashop>configure_d97f0bac6428cc1d248d2de0d932930e'] = 'Acceder como cliente';
-$_MODULE['<{loginascustomer}prestashop>configure_e60fa60ed4072c2199edcc8829d927ff'] = 'Haz clic en el botón azul "Acceder como cliente".';
+$_MODULE['<{loginascustomer}prestashop>configure_9f45ccdac3847506cd8fe34359078c03'] = 'Haz clic en el botón \"Acceder como cliente\".';
 $_MODULE['<{loginascustomer}prestashop>configure_ec53a8c4f07baed5d8825072c89799be'] = 'Estado';
 $_MODULE['<{loginascustomer}prestashop>configure_fec728523a0d90cc1ebc2698023a7148'] = 'Botón mostrado en las fichas de cliente';
 $_MODULE['<{loginascustomer}prestashop>connect_338267ae9b920c2b3e9a8baf445c43e6'] = 'El enlace es de un solo uso y caduca tras %d minutos.';
